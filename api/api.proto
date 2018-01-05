@@ -1,0 +1,28 @@
+syntax = "proto3";
+
+package types;
+
+message Query {
+  int32 lineNumber = 1;
+  int32 charNumber = 2;
+  string fileName = 3;
+  string pkg = 4;
+}
+
+message Position {
+  string fileName = 1;
+  int32 offset = 2;  //Offset starting at 0
+  int32 line = 3; //Line starting at 1
+  int32 column = 4;  //Column starting at 1
+}
+
+message DefResponse {
+  string name = 1;
+  string type = 2;
+  string pkg = 3;
+  Position position = 4;
+}
+
+service LanguageServer {
+  rpc GetDefinition(Query) returns (DefResponse) {}
+}
