@@ -1,8 +1,13 @@
 package grpclangserv
 
 import (
+	"fmt"
 	"log"
 	"net"
+	"os"
+	"os/signal"
+	"syscall"
+	"time"
 
 	"golang.org/x/net/context"
 
@@ -20,17 +25,14 @@ func StartRPCServer(cfg Cfg) {
 		cfg: cfg,
 	}
 
-	lis, err := net.Listen("tcp", fmt.Sprintf("%s:%s", cfg.RPCListen, cfg.RPCPort)
+	addr := fmt.Sprintf("%s:%s", cfg.RPCListen, cfg.RPCPort)
+	lis, err := net.Listen("tcp", addr)
 	if err != nil {
-		err := errors.Wrapf(err, "Unable to listen on %s", rpcEntry)
+		err := errors.Wrapf(err, "Unable to listen on %s", addr)
 		log.Fatalln(err)
 	}
 
 	s := grpc.NewServer()
-
-	srv := server{
-		cfg: cfg,
-	}
 
 	pb.RegisterLanguageServerServer(s, srv)
 	gracefulShutdown()
@@ -56,10 +58,10 @@ func gracefulShutdown() {
 	signal.Notify(stop, syscall.SIGTERM)
 	signal.Notify(stop, syscall.SIGINT)
 	go func() {
-		sig := <- stop
+		sig := <-stop
 		fmt.Printf("Caught Sig: %v", sig)
 		fmt.Println("Waiting 5 secs to finish jobs")
-		time.Sleep(5*time.Second)
+		time.Sleep(5 * time.Second)
 		os.Exit(0)
 	}()
 }

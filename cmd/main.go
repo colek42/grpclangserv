@@ -6,6 +6,6 @@ import (
 
 func main() {
 	cfg := grpclangserv.GetCfg()
-	grpclangserv.StartRPCServeri(cfg)
+	grpclangserv.StartRPCServer(cfg)
 
 }
