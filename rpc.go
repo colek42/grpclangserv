@@ -20,6 +20,7 @@ type server struct {
 	cfg Cfg
 }
 
+//StartRPCServer starts the RPC service and shuts down gracefully when requested.
 func StartRPCServer(cfg Cfg) {
 	srv := server{
 		cfg: cfg,
@@ -39,6 +40,7 @@ func StartRPCServer(cfg Cfg) {
 	s.Serve(lis)
 }
 
+//GetDefinition impiments the GetDefinition gRPC service
 func (s server) GetDefinition(c context.Context, q *pb.Query) (*pb.DefResponse, error) {
 	path := getPath(q.GetPkg(), q.GetFileName())
 	byteOffset, err := LineToByteOffset(path, q.GetLineNumber(), q.GetCharNumber())
