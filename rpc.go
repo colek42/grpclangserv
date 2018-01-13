@@ -11,24 +11,29 @@ import (
 	"google.golang.org/grpc"
 )
 
-var (
-	rpcEntry = "localhost:4534"
-)
+type server struct {
+	cfg Cfg
+}
 
-type server struct{}
+func StartRPCServer(cfg Cfg) {
+	srv := server{
+		cfg: cfg,
+	}
 
-func StartRPCServer() {
-	lis, err := net.Listen("tcp", rpcEntry)
+	lis, err := net.Listen("tcp", fmt.Sprintf("%s:%s", cfg.RPCListen, cfg.RPCPort)
 	if err != nil {
 		err := errors.Wrapf(err, "Unable to listen on %s", rpcEntry)
-		log.Println(err)
+		log.Fatalln(err)
 	}
 
 	s := grpc.NewServer()
 
-	srv := server{}
-	pb.RegisterLanguageServerServer(s, srv)
+	srv := server{
+		cfg: cfg,
+	}
 
+	pb.RegisterLanguageServerServer(s, srv)
+	gracefulShutdown()
 	s.Serve(lis)
 }
 
@@ -43,4 +48,18 @@ func (s server) GetDefinition(c context.Context, q *pb.Query) (*pb.DefResponse, 
 	res, err := Query(int(byteOffset), "definition", path)
 
 	return res, err
+}
+
+//Catches sigterm/ sigint and performs a graceful shutdown
+func gracefulShutdown() {
+	var stop = make(chan os.Signal)
+	signal.Notify(stop, syscall.SIGTERM)
+	signal.Notify(stop, syscall.SIGINT)
+	go func() {
+		sig := <- stop
+		fmt.Printf("Caught Sig: %v", sig)
+		fmt.Println("Waiting 5 secs to finish jobs")
+		time.Sleep(5*time.Second)
+		os.Exit(0)
+	}()
 }

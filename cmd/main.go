@@ -5,6 +5,7 @@ import (
 )
 
 func main() {
-	grpclangserv.StartRPCServer()
+	cfg := grpclangserv.GetCfg()
+	grpclangserv.StartRPCServeri(cfg)
 
 }
