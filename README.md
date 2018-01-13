@@ -26,24 +26,23 @@ I did not spend much time on client code.  The client package I have is pretty m
 I have no integration testing.  I like to do integration testing when I set up CI.
 
 This service is very slow, this let me keep it simple.  There are a few ways I could speed it up without adding additional services.
-	- memoize the query function.
-	- create a virtual file system for all of the code
-	- restore the "shortcut" code in my guru fork
+- memoize the query function.
+- create a virtual file system for all of the code
+- restore the "shortcut" code in my guru fork
 
 
 # Alternative Approaches
-	1.  Use JSON Response from guru
-		- This would require a more complicated build.  When my build process is simple it is easier to flush out issues.  Having a signle binary is about as siimple as it gets.
-		- I did not want to marshal->unmarshal->marshal.  This takes time, and memory, and bad bugs seem to always pop up in this code.  Being able to stay type safe thoughout my service call makes me happy.
-	2. Impliment the code crawling logic myself.
-		- The guru code is well tested and written by people with much more domain knowledge than I, and it is free.
+1.  Use JSON Response from guru
+	- This would require a more complicated build.  When my build process is simple it is easier to flush out issues.  Having a signle binary is about as siimple as it gets.
+	- I did not want to marshal->unmarshal->marshal.  This takes time, and memory, and bad bugs seem to always pop up in this code.  Being able to stay type safe thoughout my service call makes me happy.
+2. Impliment the code crawling logic myself.
+	- The guru code is well tested and written by people with much more domain knowledge than I, and it is free.
 # Issues
-
-	- I don't have a real UX, instead I have an API.  It didn't make sense to write a command line utility on top of guru, as it already exists.  Plus, I wanted to show off my ability to build scalable services.
-	- I am not 100% sure if the LineToByteOffset function is correct.  It might be off by one.  I would like more testing.
-	- I only had time for part one and two of the challenge.  For part 3 I would probably just extend the .proto to include where the token is referenced and allow the client to eneter an array of modes.
-	- Modes should be an Enum so we have type saftety at the endpoint.
-	- I am missing edge cases everywhere. For example, what happens if the file is shorter than the linenumber and charnumber entered by the user?  What happens if they are negative.  Tests cases need to be added for thing like this so the response can be well defined.
-	- I need to add heath/ready/version endpoints
-	- There is no versioning
-	- I did not write any orchestration
+- I don't have a real UX, instead I have an API.  It didn't make sense to write a command line utility on top of guru, as it already exists.  Plus, I wanted to show off my ability to build scalable services.
+- I am not 100% sure if the LineToByteOffset function is correct.  It might be off by one.  I would like more testing.
+- I only had time for part one and two of the challenge.  For part 3 I would probably just extend the .proto to include where the token is referenced and allow the client to eneter an array of modes.
+- Modes should be an Enum so we have type saftety at the endpoint.
+- I am missing edge cases everywhere. For example, what happens if the file is shorter than the linenumber and charnumber entered by the user?  What happens if they are negative.  Tests cases need to be added for thing like this so the response can be well defined.
+- I need to add heath/ready/version endpoints
+- There is no versioning
+- I did not write any orchestration
